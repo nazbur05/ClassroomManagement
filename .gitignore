@@ -1,0 +1,16 @@
+# Build files
+bin/
+obj/
+migrations/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.log
+*.mdf
+*.ldf
+*.deps.json
+*.runtimeconfig.json
+*.dll
+*.exe
