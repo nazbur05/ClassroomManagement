@@ -1,11 +1,18 @@
-//I will add here in the future
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ClassroomManagement.Models;
 
-public class ApplicationDbContext : IdentityDbContext
+namespace ClassroomManagement.Data
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    public class ApplicationDbContext : IdentityDbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        // Example DbSet
+        public DbSet<Student> Students { get; set; }
     }
 }
+
