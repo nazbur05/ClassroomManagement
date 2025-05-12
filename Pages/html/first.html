@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idroo - Online Whiteboard for Schools</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4a6cf7;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn-outline {
+            border: 2px solid #4a6cf7;
+            background: transparent;
+            color: #4a6cf7;
+        }
+
+        .btn-outline:hover {
+            background: #4a6cf7;
+            color: white;
+        }
+
+        .btn-primary {
+            background: #4a6cf7;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a5ce4;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f5f7ff 0%, #e8ecff 100%);
+            padding: 150px 5% 100px;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 5%;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            font-size: 18px;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: #f9faff;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(74, 108, 247, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #e8ecff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon img {
+            width: 40px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #4a6cf7 0%, #3a5ce4 100%);
+            padding: 80px 5%;
+            text-align: center;
+            color: white;
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        .cta .btn {
+            background: white;
+            color: #4a6cf7;
+            font-size: 18px;
+            padding: 15px 30px;
+        }
+
+        .cta .btn:hover {
+            background: #f0f0f0;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 60px 5% 30px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .footer-logo {
+            height: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-about p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 20px;
+        }
+
+        .footer-links h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img src="https://app.idroo.com/wp-content/uploads/2021/05/idroo-logo.svg" alt="EduGo" class="logo">
+            
+            <nav class="nav-links">
+                <a href="#">Features</a>
+                <a href="#">Pricing</a>
+                <a href="#">Templates</a>
+                <a href="#">Integrations</a>
+                <a href="#">For Schools</a>
+                <a href="#">Blog</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <button class="btn btn-outline">Log In</button>
+                <button class="btn btn-primary">Sign Up Free</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Online Classroom Management</h1>
+            <p>EduGo is the perfect tool for online teaching. Collaborate with students in real-time, share materials, and make learning interactive and engaging.</p>
+            
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Start Teaching Now</button>
+                <button class="btn btn-outline">Watch Demo</button>
+            </div>
+            
+            <img src="https://app.idroo.com/wp-content/uploads/2021/05/hero-schools.png" alt="EduGo for Schools" class="hero-image">
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="section-title">
+            <h2>Why Teachers Love EduGo</h2>
+            <p>Discover the features that make EduGo the preferred online whiteboard for educators worldwide</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="https://app.idroo.com/wp-content/uploads/2021/05/icon-collaboration.svg" alt="Collaboration">
+                </div>
+                <h3>Real-Time Collaboration</h3>
+                <p>Work with students simultaneously on the same board, seeing each other's changes instantly.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="https://app.idroo.com/wp-content/uploads/2021/05/icon-templates.svg" alt="Templates">
+                </div>
+                <h3>Educational Templates</h3>
+                <p>Save time with ready-made templates for math, science, language arts, and more.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="https://app.idroo.com/wp-content/uploads/2021/05/icon-recording.svg" alt="Recording">
+                </div>
+                <h3>Session Recording</h3>
+                <p>Record your lessons and share them with students for later review.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="https://app.idroo.com/wp-content/uploads/2021/05/icon-integrations.svg" alt="Integrations">
+                </div>
+                <h3>Video Conferencing</h3>
+                <p>Integrated with Zoom, Google Meet and Microsoft Teams for seamless virtual classes.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="https://app.idroo.com/wp-content/uploads/2021/05/icon-sharing.svg" alt="Sharing">
+                </div>
+                <h3>Easy Sharing</h3>
+                <p>Share boards via link or email with just one click - no accounts required for students.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="https://app.idroo.com/wp-content/uploads/2021/05/icon-security.svg" alt="Security">
+                </div>
+                <h3>Secure & Private</h3>
+                <p>End-to-end encrypted boards ensure your teaching materials stay private.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to Transform Your Online Teaching?</h2>
+        <p>Join thousands of educators who use Idroo to make their virtual classrooms more interactive and effective.</p>
+        <button class="btn">Get Started for Free</button>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-about">
+                <img src="https://app.idroo.com/wp-content/uploads/2021/05/idroo-logo-white.svg" alt="Idroo Logo" class="footer-logo">
+                <p>EduGo is an online whiteboard designed for teaching, collaboration and visual communication.</p>
+            
+            </div>
+            
+            <div class="footer-links">
+                <h3>Product</h3>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Templates</a></li>
+                    <li><a href="#">Integrations</a></li>
+                    <li><a href="#">For Schools</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Help Center</a></li>
