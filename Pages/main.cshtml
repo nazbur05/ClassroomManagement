@@ -1,0 +1,114 @@
+@page
+@model DashboardModel
+@{
+    ViewData["Title"] = "EduGo - Student Dashboard";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Include your full CSS here (as in your original HTML) */
+        /* ... [Unchanged CSS from your file] ... */
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d0/WSIiZ_logo.svg/220px-WSIiZ_logo.svg.png" alt="EduGo Logo">
+        </div>
+        <h2>EduGo</h2>
+        <nav class="nav">
+            <a href="#" class="active">@Model.Translations["dashboard"]</a>
+            <a href="#">@Model.Translations["profile"]</a>
+            <a href="#">@Model.Translations["courses"]</a>
+            <a href="#">@Model.Translations["tasks"]</a>
+            <a href="#">@Model.Translations["settings"]</a>
+        </nav>
+    </div>
+
+    <div class="main">
+        <div class="topbar">
+            <div id="toggleSidebar" class="arrow-2">
+                <div class="arrow-2-top"></div>
+                <div class="arrow-2-bottom"></div>
+            </div>
+            <h1>@Model.Translations["myCourses"]</h1>
+            <div class="right">
+                <select id="languageSwitcher">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="pl">🇵🇱 Polski</option>
+                </select>
+
+                <div class="user-profile">
+                    <img src="https://img.lovepik.com/png/20231031/Avatar-user-interface-abstract-user-login-icon-logo-Login-icon_430106_wh860.png" alt="User" />
+                    <span>@Model.UserName</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            @foreach (var course in Model.Courses)
+            {
+                <div class="card" style="background: url('@course.Image'); background-size: cover; color: rgb(247, 247, 247)">
+                    <h2>@course.Title</h2>
+                    <p>@course.Code</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            alert("You have been logged out.");
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+
+        const toggleBtn = document.getElementById("toggleSidebar");
+        const sidebar = document.querySelector(".sidebar");
+
+        toggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("collapsed");
+        });
+
+        const translations = {
+            pl: {
+                dashboard: "Panel główny",
+                profile: "Profil",
+                courses: "Moje Kursy",
+                tasks: "Zadania",
+                settings: "Ustawienia",
+                myCourses: "Moje Kursy"
+            },
+            en: {
+                dashboard: "Dashboard",
+                profile: "Profile",
+                courses: "My Courses",
+                tasks: "Tasks",
+                settings: "Settings",
+                myCourses: "My Courses"
+            }
+        };
+
+        const switcher = document.getElementById("languageSwitcher");
+
+        switcher.addEventListener("change", function () {
+            const lang = this.value;
+            const navLinks = document.querySelectorAll(".nav a");
+            navLinks[0].textContent = translations[lang].dashboard;
+            navLinks[1].textContent = translations[lang].profile;
+            navLinks[2].textContent = translations[lang].courses;
+            navLinks[3].textContent = translations[lang].tasks;
+            navLinks[4].textContent = translations[lang].settings;
+            document.querySelector(".topbar h1").textContent = translations[lang].myCourses;
+        });
+    </script>
+</body>
+</html>
