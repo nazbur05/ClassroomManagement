@@ -1,0 +1,42 @@
+@page
+@model YourAppNamespace.Pages.SignupModel
+
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGo - Sign Up</title>
+    <style>
+        /* Стили без изменений */
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <img src="https://app.idroo.com/wp-content/uploads/2021/05/idroo-logo.svg" alt="Idroo Logo" class="logo" />
+        <h1>Create your account</h1>
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Input.FullName"></label>
+                <input asp-for="Input.FullName" placeholder="Enter your full name" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" placeholder="Enter your email" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" placeholder="Create a password" type="password" />
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        <p class="terms">By signing up, you agree to our Terms of Service and Privacy Policy.</p>
+        <p class="login-link">Already have an account? <a asp-page="/Login">Log in</a></p>
+    </div>
+</body>
+</html>
+
