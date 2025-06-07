@@ -7,7 +7,7 @@ namespace YourAppNamespace.Pages
     public class SignupModel : PageModel
     {
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = null!;
 
         public void OnGet()
         {
@@ -20,7 +20,7 @@ namespace YourAppNamespace.Pages
                 return Page();
             }
 
-            // TODO: Save user data to database here
+            //Save user data to database
 
             return RedirectToPage("/Login");
         }

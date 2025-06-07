@@ -7,12 +7,12 @@ public class LoginModel : PageModel
     [BindProperty]
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     [BindProperty]
     [Required]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     public void OnGet()
     {
@@ -25,10 +25,9 @@ public class LoginModel : PageModel
             return Page();
         }
 
-        // TODO: Authenticate user (replace with real logic)
-        if (Email == "test@example.com" && Password == "password123")
+        if (Email == "test@classroom.com" && Password == "password123")
         {
-            return RedirectToPage("/Dashboard"); // Example target after login
+            return RedirectToPage("/Main");
         }
 
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");

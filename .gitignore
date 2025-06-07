@@ -1,16 +1,7 @@
-# Build files
+secret.env
 bin/
 obj/
 migrations/
-
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-*.log
-*.mdf
-*.ldf
-*.deps.json
-*.runtimeconfig.json
-*.dll
-*.exe
+Data/classroomdb.sql
+/Data/DataSeeder.cs
+/.vscode
