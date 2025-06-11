@@ -11,6 +11,8 @@ namespace ClassroomManagement.Data
 
         public DbSet<Course> Courses { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
+        public DbSet<CourseMaterial> CourseMaterials { get; set; }
+        public DbSet<CourseMaterialFile> CourseMaterialFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,6 +32,12 @@ namespace ClassroomManagement.Data
                 .WithMany(s => s.StudentCourse)
                 .HasForeignKey(ss => ss.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+             builder.Entity<CourseMaterial>()
+            .HasOne(cm => cm.Course)
+            .WithMany(c => c.Materials)
+            .HasForeignKey(cm => cm.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
