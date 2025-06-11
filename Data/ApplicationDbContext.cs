@@ -7,28 +7,28 @@ namespace ClassroomManagement.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) {}
+            : base(options) { }
 
-        public DbSet<Subject> Subjects { get; set; }
-        public DbSet<StudentSubject> StudentSubjects { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<StudentCourse> StudentCourses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<StudentSubject>()
-                .HasKey(ss => new { ss.StudentId, ss.SubjectId });
+            builder.Entity<StudentCourse>()
+                .HasKey(ss => new { ss.StudentId, ss.CourseId });
 
-            builder.Entity<StudentSubject>()
+            builder.Entity<StudentCourse>()
                 .HasOne(ss => ss.Student)
-                .WithMany(u => u.StudentSubjects)
+                .WithMany(u => u.StudentCourses)
                 .HasForeignKey(ss => ss.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<StudentSubject>()
-                .HasOne(ss => ss.Subject)
-                .WithMany(s => s.StudentSubjects)
-                .HasForeignKey(ss => ss.SubjectId)
+            builder.Entity<StudentCourse>()
+                .HasOne(ss => ss.Course)
+                .WithMany(s => s.StudentCourse)
+                .HasForeignKey(ss => ss.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

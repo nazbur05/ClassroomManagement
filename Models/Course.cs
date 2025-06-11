@@ -1,5 +1,5 @@
 namespace ClassroomManagement.Models;
-public class Subject
+public class Course
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -7,5 +7,5 @@ public class Subject
     public string InstructorId { get; set; }
     public ApplicationUser Instructor { get; set; } = null!;
 
-    public List<StudentSubject> StudentSubjects { get; set; } = new();
+    public List<StudentCourse> StudentCourse { get; set; } = new();
 }
