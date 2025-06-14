@@ -18,6 +18,10 @@ namespace ClassroomManagement.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<ApplicationUser>()
+            .Property(u => u.StudId)
+            .HasMaxLength(6);
+
             builder.Entity<StudentCourse>()
                 .HasKey(ss => new { ss.StudentId, ss.CourseId });
 

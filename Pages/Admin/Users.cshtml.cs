@@ -34,6 +34,20 @@ namespace ClassroomManagement.Pages.Admin
         public string NewPassword { get; set; }
         [BindProperty]
         public string NewRole { get; set; }
+        [BindProperty]
+        public string NewStudId { get; set; }
+
+        // For editing
+        [BindProperty]
+        public string EditUserId { get; set; }
+        [BindProperty]
+        public string EditEmail { get; set; }
+        [BindProperty]
+        public string EditFirstName { get; set; }
+        [BindProperty]
+        public string EditLastName { get; set; }
+        [BindProperty]
+        public string EditStudId { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -60,12 +74,112 @@ namespace ClassroomManagement.Pages.Admin
                 LastName = NewLastName,
                 EmailConfirmed = true
             };
+
+            if (NewRole == "Student")
+            {
+                if (string.IsNullOrWhiteSpace(NewStudId))
+                {
+                    ModelState.AddModelError("NewStudId", "Student ID is required for students.");
+                    await OnGetAsync();
+                    return Page();
+                }
+                if (!System.Text.RegularExpressions.Regex.IsMatch(NewStudId, @"^w\d{5}$"))
+                {
+                    ModelState.AddModelError("NewStudId", "Student ID must start with 'w' and have 5 digits.");
+                    await OnGetAsync();
+                    return Page();
+                }
+                if (_userManager.Users.Any(u => u.StudId == NewStudId))
+                {
+                    ModelState.AddModelError("NewStudId", "Student ID already exists.");
+                    await OnGetAsync();
+                    return Page();
+                }
+                user.StudId = NewStudId;
+            }
+            else
+            {
+                user.StudId = null;
+            }
+
             var result = await _userManager.CreateAsync(user, NewPassword);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, NewRole);
             }
-            return RedirectToPage("/Main");
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                await OnGetAsync();
+                return Page();
+            }
+            return RedirectToPage();
+        }
+
+        // Inline editing
+        public async Task<IActionResult> OnPostEditAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return RedirectToPage();
+
+            EditUserId = user.Id;
+            EditEmail = user.Email;
+            EditFirstName = user.FirstName;
+            EditLastName = user.LastName;
+            EditStudId = user.StudId;
+            await OnGetAsync();
+            return Page();
+        }
+
+        // Save changes
+        public async Task<IActionResult> OnPostUpdateAsync()
+        {
+            var user = await _userManager.FindByIdAsync(EditUserId);
+            if (user == null)
+                return RedirectToPage();
+
+            user.Email = EditEmail;
+            user.UserName = EditEmail;
+            user.FirstName = EditFirstName;
+            user.LastName = EditLastName;
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Student"))
+            {
+                if (string.IsNullOrWhiteSpace(EditStudId) || !System.Text.RegularExpressions.Regex.IsMatch(EditStudId, @"^w\d{5}$"))
+                {
+                    ModelState.AddModelError("EditStudId", "Student ID must start with 'w' and have 5 digits.");
+                    await OnGetAsync();
+                    return Page();
+                }
+                if (_userManager.Users.Any(u => u.StudId == EditStudId && u.Id != EditUserId))
+                {
+                    ModelState.AddModelError("EditStudId", "Student ID already exists.");
+                    await OnGetAsync();
+                    return Page();
+                }
+                user.StudId = EditStudId;
+            }
+            else
+            {
+                user.StudId = null;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                await OnGetAsync();
+                return Page();
+            }
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(string id)

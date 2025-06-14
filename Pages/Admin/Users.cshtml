@@ -6,6 +6,8 @@
 
 <h1>User Management</h1>
 
+<a asp-page="/Main" class="btn btn-primary" style="margin-bottom: 20px;">Back to Main Page</a>
+
 <h2>Instructors</h2>
 <table>
     <tr><th>Email</th><th>Name</th><th>Actions</th></tr>
@@ -15,7 +17,7 @@
             <td>@user.Email</td>
             <td>@user.FirstName @user.LastName</td>
             <td>
-                <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id">
+                <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
             </td>
@@ -25,18 +27,45 @@
 
 <h2>Students</h2>
 <table>
-    <tr><th>Email</th><th>Name</th><th>Actions</th></tr>
+    <tr><th>Student ID</th><th>Email</th><th>Name</th><th>Actions</th></tr>
     @foreach (var user in Model.Students)
     {
-        <tr>
-            <td>@user.Email</td>
-            <td>@user.FirstName @user.LastName</td>
-            <td>
-                <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id">
-                    <button type="submit">Delete</button>
+        if (Model.EditUserId == user.Id)
+        {
+            <tr>
+                <form method="post" asp-page-handler="Update">
+                    <td>
+                        <input type="hidden" name="EditUserId" value="@user.Id" />
+                        <input type="text" name="EditStudId" value="@Model.EditStudId" maxlength="6" pattern="w\d{5}" required />
+                    </td>
+                    <td><input type="email" name="EditEmail" value="@Model.EditEmail" required /></td>
+                    <td>
+                        <input type="text" name="EditFirstName" value="@Model.EditFirstName" required />
+                        <input type="text" name="EditLastName" value="@Model.EditLastName" required />
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <a asp-page="/Admin/Users" class="btn btn-secondary">Cancel</a>
+                    </td>
                 </form>
-            </td>
-        </tr>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>@user.StudId</td>
+                <td>@user.Email</td>
+                <td>@user.FirstName @user.LastName</td>
+                <td>
+                    <form method="post" asp-page-handler="Edit" asp-route-id="@user.Id" style="display:inline;">
+                        <button type="submit" class="btn btn-warning">Edit</button>
+                    </form>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
     }
 </table>
 
@@ -47,9 +76,32 @@
     <label>Last Name:</label><input type="text" name="NewLastName" required />
     <label>Password:</label><input type="password" name="NewPassword" required />
     <label>Role:</label>
-    <select name="NewRole">
+    <select name="NewRole" id="roleSelect" onchange="toggleStudIdField()">
         <option value="Instructor">Instructor</option>
         <option value="Student">Student</option>
     </select>
+    <label id="studIdLabel" style="display:none;">Student ID:</label>
+    <input type="text" name="NewStudId" id="studIdInput" maxlength="6" pattern="w\d{5}" title="Student ID must start with 'w' and have 5 digits." style="display:none;" value="@Model.NewStudId" />
     <button type="submit">Create</button>
 </form>
+
+@section Scripts {
+    <script>
+        function toggleStudIdField() {
+            var role = document.getElementById('roleSelect').value;
+            var studIdInput = document.getElementById('studIdInput');
+            var studIdLabel = document.getElementById('studIdLabel');
+            if (role === 'Student') {
+                studIdInput.style.display = '';
+                studIdLabel.style.display = '';
+                studIdInput.required = true;
+            } else {
+                studIdInput.style.display = 'none';
+                studIdLabel.style.display = 'none';
+                studIdInput.required = false;
+            }
+        }
+        // In case of validation errors...
+        window.onload = toggleStudIdField;
+    </script>
+}

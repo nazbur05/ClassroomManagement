@@ -41,7 +41,7 @@ using (var scope = app.Services.CreateScope())
 
     await DbInitializer.Initialize(context, userManager, roleManager);
 
-    await DataSeeder.SeedInstructors(userManager); // Create separete DataSeeder for this
+    await DataSeeder.SeedInstructors(userManager); // Create separate DataSeeder for this
 }
 
 app.UseHttpsRedirection();
