@@ -8,6 +8,8 @@ public class Course
     public string InstructorId { get; set; }
     public ApplicationUser Instructor { get; set; } = null!;
 
+    public string BgImagePath { get; set; }
+
     public List<StudentCourse> StudentCourse { get; set; } = new();
     public ICollection<CourseMaterial> Materials { get; set; } = new List<CourseMaterial>();
 

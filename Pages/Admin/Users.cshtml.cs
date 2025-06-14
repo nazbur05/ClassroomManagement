@@ -36,6 +36,8 @@ namespace ClassroomManagement.Pages.Admin
         public string NewRole { get; set; }
         [BindProperty]
         public string NewStudId { get; set; }
+        [BindProperty]
+        public string NewSpecialization { get; set; }
 
         // For editing
         [BindProperty]
@@ -48,6 +50,8 @@ namespace ClassroomManagement.Pages.Admin
         public string EditLastName { get; set; }
         [BindProperty]
         public string EditStudId { get; set; }
+        [BindProperty]
+        public string EditSpecialization { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -100,6 +104,7 @@ namespace ClassroomManagement.Pages.Admin
             else
             {
                 user.StudId = null;
+                user.Specialization = NewSpecialization;
             }
 
             var result = await _userManager.CreateAsync(user, NewPassword);
@@ -131,6 +136,7 @@ namespace ClassroomManagement.Pages.Admin
             EditFirstName = user.FirstName;
             EditLastName = user.LastName;
             EditStudId = user.StudId;
+            EditSpecialization = user.Specialization;
             await OnGetAsync();
             return Page();
         }
@@ -163,10 +169,12 @@ namespace ClassroomManagement.Pages.Admin
                     return Page();
                 }
                 user.StudId = EditStudId;
+                user.Specialization = null;
             }
             else
             {
                 user.StudId = null;
+                user.Specialization = EditSpecialization;
             }
 
             var result = await _userManager.UpdateAsync(user);
