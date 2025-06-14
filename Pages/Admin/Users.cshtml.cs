@@ -100,6 +100,7 @@ namespace ClassroomManagement.Pages.Admin
                     return Page();
                 }
                 user.StudId = NewStudId;
+                user.Specialization = null;
             }
             else
             {

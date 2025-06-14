@@ -105,44 +105,46 @@
 
 <h2>Add New User</h2>
 <form method="post" asp-page-handler="Create">
-    <label>Email:</label><input type="email" name="NewEmail" required />
-    <label>First Name:</label><input type="text" name="NewFirstName" required />
-    <label>Last Name:</label><input type="text" name="NewLastName" required />
-    <label>Password:</label><input type="password" name="NewPassword" required />
+    <label>Email:</label>
+    <input type="email" name="NewEmail" required />
+    <label>First Name:</label>
+    <input type="text" name="NewFirstName" required />
+    <label>Last Name:</label>
+    <input type="text" name="NewLastName" required />
+    <label>Password:</label>
+    <input type="password" name="NewPassword" required />
     <label>Role:</label>
     <select name="NewRole" id="roleSelect" onchange="toggleFields()">
         <option value="Instructor">Instructor</option>
         <option value="Student">Student</option>
     </select>
     <label id="studIdLabel" style="display:none;">Student ID:</label>
-    <input type="text" name="NewStudId" id="studIdInput" maxlength="6" pattern="w\d{5}" title="Student ID must start with 'w' and have 5 digits." style="display:none;" value="@Model.NewStudId" />
+    <input type="text" name="NewStudId" id="studIdInput" maxlength="6" pattern="w\d{5}" style="display:none;" value="@Model.NewStudId" />
     <label id="specializationLabel" style="display:none;">Specialization:</label>
     <input type="text" name="NewSpecialization" id="specializationInput" style="display:none;" value="@Model.NewSpecialization" />
     <button type="submit">Create</button>
 </form>
 
-@section Scripts {
-    <script>
-        function toggleFields() {
-            var role = document.getElementById('roleSelect').value;
-            var studIdInput = document.getElementById('studIdInput');
-            var studIdLabel = document.getElementById('studIdLabel');
-            var specializationInput = document.getElementById('specializationInput');
-            var specializationLabel = document.getElementById('specializationLabel');
-            if (role === 'Student') {
-                studIdInput.style.display = '';
-                studIdLabel.style.display = '';
-                studIdInput.required = true;
-                specializationInput.style.display = 'none';
-                specializationLabel.style.display = 'none';
-            } else {
-                studIdInput.style.display = 'none';
-                studIdLabel.style.display = 'none';
-                studIdInput.required = false;
-                specializationInput.style.display = '';
-                specializationLabel.style.display = '';
-            }
+<script>
+    function toggleFields() {
+        var role = document.getElementById('roleSelect').value;
+        var studIdInput = document.getElementById('studIdInput');
+        var studIdLabel = document.getElementById('studIdLabel');
+        var specializationInput = document.getElementById('specializationInput');
+        var specializationLabel = document.getElementById('specializationLabel');
+        if (role === 'Student') {
+            studIdInput.style.display = '';
+            studIdLabel.style.display = '';
+            studIdInput.required = true;
+            specializationInput.style.display = 'none';
+            specializationLabel.style.display = 'none';
+        } else {
+            studIdInput.style.display = 'none';
+            studIdLabel.style.display = 'none';
+            studIdInput.required = false;
+            specializationInput.style.display = '';
+            specializationLabel.style.display = '';
         }
-        window.onload = toggleFields;
-    </script>
-}
+    }
+    window.onload = toggleFields;
+</script>
