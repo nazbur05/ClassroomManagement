@@ -2,6 +2,5 @@ secret.env
 bin/
 obj/
 migrations/
-Data/classroomdb.sql
 /Data/DataSeeder.cs
 /.vscode

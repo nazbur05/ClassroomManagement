@@ -1,44 +1,60 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using ClassroomManagement.Models;
 
-namespace YourAppNamespace.Pages
+public class LoginModel : PageModel
 {
-    public class SignupModel : PageModel
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ILogger<LoginModel> _logger;
+
+    public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
     {
-        [BindProperty]
-        public InputModel Input { get; set; } = null!;
+        _signInManager = signInManager;
+        _logger = logger;
+    }
 
-        public void OnGet()
+    [BindProperty]
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
+    public string Email { get; set; } = string.Empty;
+
+    [BindProperty]
+    [Required(ErrorMessage = "Password is required")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    public void OnGet()
+    {
+        _logger.LogInformation("Login page visited.");
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        _logger.LogInformation("Login attempt for email: {Email}", Email);
+
+        if (!ModelState.IsValid)
         {
+            _logger.LogWarning("Login attempt failed model validation for email: {Email}", Email);
+            return Page();
         }
 
-        public IActionResult OnPost()
+        var result = await _signInManager.PasswordSignInAsync(Email, Password, isPersistent: false, lockoutOnFailure: false);
+
+        if (result.Succeeded)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            //Save user data to database
-
-            return RedirectToPage("/Login");
+            _logger.LogInformation("Login succeeded for email: {Email}", Email);
+            return RedirectToPage("/Main");
+        }
+        else
+        {
+            _logger.LogWarning("Login failed for email: {Email}", Email);
         }
 
-        public class InputModel
-        {
-            [Required(ErrorMessage = "Full name is required")]
-            [Display(Name = "Full Name")]
-            public string FullName { get; set; }
-
-            [Required(ErrorMessage = "Email is required")]
-            [EmailAddress(ErrorMessage = "Invalid email address")]
-            public string Email { get; set; }
-
-            [Required(ErrorMessage = "Password is required")]
-            [DataType(DataType.Password)]
-            [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
-            public string Password { get; set; }
-        }
+        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        return Page();
     }
 }
