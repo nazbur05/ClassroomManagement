@@ -1,0 +1,55 @@
+@page
+@model ClassroomManagement.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1>User Management</h1>
+
+<h2>Instructors</h2>
+<table>
+    <tr><th>Email</th><th>Name</th><th>Actions</th></tr>
+    @foreach (var user in Model.Instructors)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.FirstName @user.LastName</td>
+            <td>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+<h2>Students</h2>
+<table>
+    <tr><th>Email</th><th>Name</th><th>Actions</th></tr>
+    @foreach (var user in Model.Students)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.FirstName @user.LastName</td>
+            <td>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+<h2>Add New User</h2>
+<form method="post" asp-page-handler="Create">
+    <label>Email:</label><input type="email" name="NewEmail" required />
+    <label>First Name:</label><input type="text" name="NewFirstName" required />
+    <label>Last Name:</label><input type="text" name="NewLastName" required />
+    <label>Password:</label><input type="password" name="NewPassword" required />
+    <label>Role:</label>
+    <select name="NewRole">
+        <option value="Instructor">Instructor</option>
+        <option value="Student">Student</option>
+    </select>
+    <button type="submit">Create</button>
+</form>
