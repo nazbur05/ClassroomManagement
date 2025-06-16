@@ -4,6 +4,8 @@
     ViewData["Title"] = "Add Material";
 }
 
+<a href="/Course?id=@Model.CourseId" class="btn btn-secondary mb-3">&larr; Back to Course</a>
+
 <h1>Add Material</h1>
 <form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="CourseId" />

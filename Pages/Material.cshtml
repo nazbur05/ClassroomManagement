@@ -4,6 +4,8 @@
     ViewData["Title"] = Model.Material?.Title ?? "Material";
 }
 
+<a href="/Course?id=@Model.Material.CourseId" class="btn btn-secondary mb-3">&larr; Back to Course</a>
+
 <h1>
     @if (Model.EditMode && Model.IsInstructor)
     {
@@ -15,9 +17,9 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div>
-                <label asp-for="Content"></label>
-                <textarea asp-for="Content" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="Content" class="text-danger"></span>
+                <label asp-for="MaterialContent"></label>
+                <textarea asp-for="MaterialContent" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="MaterialContent" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-success mt-2">Save</button>
             <a href="/Material?id=@Model.Material.Id" class="btn btn-secondary mt-2">Cancel</a>

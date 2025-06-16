@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = Model.Name;
 }
+<a href="/Main" class="btn btn-secondary mb-3">&larr; Back to Main</a>
+
 <h1>@Model.Name</h1>
 <p>@Model.Description</p>
 
@@ -23,7 +25,7 @@
             @foreach (var material in Model.Materials)
             {
                 <li>
-                    <strong>@material.Title</strong>
+                    <a href="/Material?id=@material.Id"><strong>@material.Title</strong></a>
                     <div>@material.Content</div>
                     @if (material.Files != null && material.Files.Any())
                     {
