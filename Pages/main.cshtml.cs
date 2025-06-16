@@ -1,37 +1,125 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ClassroomManagement.Data;
+using ClassroomManagement.Models;
 
 public class DashboardModel : PageModel
 {
-    public string UserName { get; set; } = "Yessen G.";
+    private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public Dictionary<string, string> Translations { get; set; }
-
-    public List<Course> Courses { get; set; }
-
-    public void OnGet()
+    public DashboardModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
-        Translations = new Dictionary<string, string>
-        {
-            { "dashboard", "Dashboard" },
-            { "profile", "Profile" },
-            { "courses", "My Courses" },
-            { "tasks", "Tasks" },
-            { "settings", "Settings" },
-            { "myCourses", "My Courses" }
-        };
-
-        Courses = new List<Course>
-        {
-            new Course { Title = "Health Education in Lifestyle Diseases", Code = "GP: 2LID-A-CPS/2023-ASK01", Image = "https://st2.depositphotos.com/2250467/7841/v/450/depositphotos_78410298-stock-illustration-medical-icons-for-web-and.jpg" },
-            new Course { Title = "Social Problems of IT", Code = "GP: 2LID-A-ERASMUS/2023-ASK01", Image = "https://news.workforce.com/wp-content/uploads/sites/2/2018/12/AI-is-coming-%E2%80%94-and-HR-is-not-prepared.jpg" },
-            new Course { Title = "Computer System Architecture", Code = "GP: 4LID-A-GDD/2023-ASL01", Image = "https://media.designrush.com/articles/231707/conversions/information-technology-preview.jpg" },
-            new Course { Title = "Software Engineering", Code = "GP: 4LID-A-P/2023-ASL01", Image = "https://studenthub.africa/app/uploads/blog/DgmQowf_JLkY2wy8JJWgt3KZbqK2bYk6.jpeg" },
-            new Course { Title = "Programming", Code = "GP: 1LID-A-ERASMUS/2024-ASL01", Image = "https://media.licdn.com/dms/image/v2/D5612AQESyQkhP_NCuw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1711312586086?e=2147483647&v=beta&t=ikf0VZw5RNQQ5T9VL_Z9ya19rhjbi65hml9cEmPsq2Q" }
-        };
+        _context = context;
+        _userManager = userManager;
     }
 
-    public class Course
+    public string UserName { get; set; }
+    public List<NavItem> Navigation { get; set; }
+    public List<CourseViewModel> Courses { get; set; } = new();
+    public bool IsAdmin { get; set; }
+
+    public async Task OnGetAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        UserName = user?.FirstName + " " + user?.LastName ?? user?.UserName ?? "User";
+
+        var nav = new List<NavItem>();
+
+        if (user != null)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            bool isAdmin = roles.Contains("Admin");
+
+            // 1. My Courses/Courses
+            nav.Add(new NavItem
+            {
+                Key = "myCourses",
+                Label = isAdmin ? "Courses" : "My Courses",
+                Url = "/Main"
+            });
+
+            // 2. Profile
+            nav.Add(new NavItem
+            {
+                Key = "profile",
+                Label = "Profile",
+                Url = "/Profile"
+            });
+
+            // 3. Settings
+            nav.Add(new NavItem
+            {
+                Key = "settings",
+                Label = "Settings",
+                Url = "/Settings"
+            });
+
+            // 4. User Management (admin only)
+            if (isAdmin)
+            {
+                nav.Add(new NavItem
+                {
+                    Key = "userManagement",
+                    Label = "User Management",
+                    Url = "Admin/Users"
+                });
+            }
+
+            // Courses logic
+            if (isAdmin)
+            {
+                Courses = await _context.Courses
+                    .Select(c => new CourseViewModel
+                    {
+                        Title = c.Name,
+                        Code = c.Description,
+                        Image = ""
+                    })
+                    .ToListAsync();
+            }
+            else if (roles.Contains("Student"))
+            {
+                Courses = await _context.StudentCourses
+                    .Where(sc => sc.StudentId == user.Id)
+                    .Include(sc => sc.Course)
+                    .Select(sc => new CourseViewModel
+                    {
+                        Title = sc.Course.Name,
+                        Code = sc.Course.Description,
+                        Image = ""
+                    })
+                    .ToListAsync();
+            }
+            else if (roles.Contains("Instructor"))
+            {
+                Courses = await _context.Courses
+                    .Where(c => c.InstructorId == user.Id)
+                    .Select(c => new CourseViewModel
+                    {
+                        Title = c.Name,
+                        Code = c.Description,
+                        Image = ""
+                    })
+                    .ToListAsync();
+            }
+        }
+
+        Navigation = nav;
+    }
+
+    public class NavItem
+    {
+        public string Key { get; set; }
+        public string Label { get; set; }
+        public string Url { get; set; }
+    }
+
+    public class CourseViewModel
     {
         public string Title { get; set; }
         public string Code { get; set; }

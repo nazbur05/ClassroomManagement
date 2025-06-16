@@ -1,7 +1,7 @@
 @page
 @model DashboardModel
 @{
-    ViewData["Title"] = "EduGo - Student Dashboard";
+    ViewData["Title"] = "EduGo - My Courses";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -12,8 +12,7 @@
     <title>@ViewData["Title"]</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Include your full CSS here (as in your original HTML) */
-        /* ... [Unchanged CSS from your file] ... */
+        /* ... [Your unchanged CSS here] ... */
     </style>
 </head>
 <body>
@@ -23,11 +22,10 @@
         </div>
         <h2>EduGo</h2>
         <nav class="nav">
-            <a href="#" class="active">@Model.Translations["dashboard"]</a>
-            <a href="#">@Model.Translations["profile"]</a>
-            <a href="#">@Model.Translations["courses"]</a>
-            <a href="#">@Model.Translations["tasks"]</a>
-            <a href="#">@Model.Translations["settings"]</a>
+            @foreach (var nav in Model.Navigation)
+            {
+                <a href="@nav.Url" class="@(nav.Key == "myCourses" ? "active" : "")">@nav.Label</a>
+            }
         </nav>
     </div>
 
@@ -37,13 +35,8 @@
                 <div class="arrow-2-top"></div>
                 <div class="arrow-2-bottom"></div>
             </div>
-            <h1>@Model.Translations["myCourses"]</h1>
+            <h1>My Courses</h1>
             <div class="right">
-                <select id="languageSwitcher">
-                    <option value="en">🇬🇧 English</option>
-                    <option value="pl">🇵🇱 Polski</option>
-                </select>
-
                 <div class="user-profile">
                     <img src="https://img.lovepik.com/png/20231031/Avatar-user-interface-abstract-user-login-icon-logo-Login-icon_430106_wh860.png" alt="User" />
                     <span>@Model.UserName</span>
@@ -68,7 +61,7 @@
             alert("You have been logged out.");
             sessionStorage.clear();
             localStorage.clear();
-            window.location.href = '/login';
+            window.location.href = '/Index';
         }
 
         const toggleBtn = document.getElementById("toggleSidebar");
@@ -76,38 +69,6 @@
 
         toggleBtn.addEventListener("click", () => {
             sidebar.classList.toggle("collapsed");
-        });
-
-        const translations = {
-            pl: {
-                dashboard: "Panel główny",
-                profile: "Profil",
-                courses: "Moje Kursy",
-                tasks: "Zadania",
-                settings: "Ustawienia",
-                myCourses: "Moje Kursy"
-            },
-            en: {
-                dashboard: "Dashboard",
-                profile: "Profile",
-                courses: "My Courses",
-                tasks: "Tasks",
-                settings: "Settings",
-                myCourses: "My Courses"
-            }
-        };
-
-        const switcher = document.getElementById("languageSwitcher");
-
-        switcher.addEventListener("change", function () {
-            const lang = this.value;
-            const navLinks = document.querySelectorAll(".nav a");
-            navLinks[0].textContent = translations[lang].dashboard;
-            navLinks[1].textContent = translations[lang].profile;
-            navLinks[2].textContent = translations[lang].courses;
-            navLinks[3].textContent = translations[lang].tasks;
-            navLinks[4].textContent = translations[lang].settings;
-            document.querySelector(".topbar h1").textContent = translations[lang].myCourses;
         });
     </script>
 </body>

@@ -12,7 +12,7 @@ public class CourseMaterial
     public string Title { get; set; }
     public string Content { get; set; }
 
-    public string FilePath { get; set; }
+    public string? FilePath { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<CourseMaterialFile> Files { get; set; }
