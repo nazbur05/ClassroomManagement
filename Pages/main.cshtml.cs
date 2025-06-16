@@ -76,6 +76,7 @@ public class DashboardModel : PageModel
                 Courses = await _context.Courses
                     .Select(c => new CourseViewModel
                     {
+                        Id = c.Id,
                         Title = c.Name,
                         Code = c.Description,
                         Image = ""
@@ -89,6 +90,7 @@ public class DashboardModel : PageModel
                     .Include(sc => sc.Course)
                     .Select(sc => new CourseViewModel
                     {
+                        Id = sc.Course.Id,
                         Title = sc.Course.Name,
                         Code = sc.Course.Description,
                         Image = ""
@@ -101,6 +103,7 @@ public class DashboardModel : PageModel
                     .Where(c => c.InstructorId == user.Id)
                     .Select(c => new CourseViewModel
                     {
+                        Id = c.Id,
                         Title = c.Name,
                         Code = c.Description,
                         Image = ""
@@ -121,6 +124,7 @@ public class DashboardModel : PageModel
 
     public class CourseViewModel
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Code { get; set; }
         public string Image { get; set; }

@@ -48,10 +48,12 @@
         <div class="grid">
             @foreach (var course in Model.Courses)
             {
-                <div class="card" style="background: url('@course.Image'); background-size: cover; color: rgb(247, 247, 247)">
-                    <h2>@course.Title</h2>
-                    <p>@course.Code</p>
-                </div>
+                <a href="/Course?id=@course.Id" style="text-decoration:none;">
+                    <div class="card" style="background: url('@course.Image'); background-size: cover; color: rgb(247, 247, 247)">
+                        <h2>@course.Title</h2>
+                        <p>@course.Code</p>
+                    </div>
+                </a>
             }
         </div>
     </div>

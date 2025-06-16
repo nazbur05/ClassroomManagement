@@ -1,0 +1,88 @@
+@page
+@model CourseModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+<h1>@Model.Name</h1>
+<p>@Model.Description</p>
+
+<div class="tabs">
+    <button id="materialsTab" class="tab-btn active" onclick="showTab('materials')">Materials</button>
+    <button id="participantsTab" class="tab-btn" onclick="showTab('participants')">Participants</button>
+    @if (User.IsInRole("Instructor"))
+    {
+        <a href="/AddMaterial?courseId=@Model.Id" class="add-material-btn">+ Add Material</a>
+    }
+</div>
+
+<div id="materialsSection" class="tab-section">
+    <h2>Materials</h2>
+    @if (Model.Materials.Any())
+    {
+        <ul>
+            @foreach (var material in Model.Materials)
+            {
+                <li>
+                    <strong>@material.Title</strong>
+                    <div>@material.Content</div>
+                    @if (material.Files != null && material.Files.Any())
+                    {
+                        <ul>
+                            @foreach(var file in material.Files)
+                            {
+                                <li>
+                                    <a href="@file.FilePath" target="_blank">@file.FileName</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No materials yet.</p>
+    }
+</div>
+
+<div id="participantsSection" class="tab-section" style="display:none;">
+    <h2>Participants</h2>
+    <p><strong>Instructor:</strong> @Model.InstructorName</p>
+    <p><strong>Students:</strong></p>
+    <ul>
+        @foreach (var s in Model.StudentNames)
+        {
+            <li>@s</li>
+        }
+    </ul>
+</div>
+
+<style>
+.tabs { display: flex; gap: 1em; margin-bottom: 1em; align-items: center; }
+.tab-btn { padding: 0.5em 1.5em; border: none; background: #eee; cursor: pointer; border-radius: 6px 6px 0 0; font-weight: bold; }
+.tab-btn.active { background: #fff; border-bottom: 2px solid #fff; }
+.tab-section { border: 1px solid #ddd; padding: 1em; border-radius: 0 6px 6px 6px; background: #fff; }
+.add-material-btn {
+    margin-left: auto;
+    padding: 0.5em 1.2em;
+    background: #3a7afe;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.add-material-btn:hover {
+    background: #2962ca;
+}
+</style>
+<script>
+function showTab(tab) {
+    document.getElementById('materialsSection').style.display = tab === 'materials' ? '' : 'none';
+    document.getElementById('participantsSection').style.display = tab === 'participants' ? '' : 'none';
+    document.getElementById('materialsTab').classList.toggle('active', tab === 'materials');
+    document.getElementById('participantsTab').classList.toggle('active', tab === 'participants');
+}
+</script>

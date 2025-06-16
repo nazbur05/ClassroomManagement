@@ -1,0 +1,23 @@
+@page
+@model AddMaterialModel
+@{
+    ViewData["Title"] = "Add Material";
+}
+
+<h1>Add Material</h1>
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="CourseId" />
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" />
+    </div>
+    <div>
+        <label asp-for="Content"></label>
+        <textarea asp-for="Content"></textarea>
+    </div>
+    <div>
+        <label asp-for="Upload">Upload File (optional):</label>
+        <input type="file" asp-for="Upload" />
+    </div>
+    <button type="submit">Add</button>
+</form>
