@@ -2,21 +2,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using ClassroomManagement.Data;
 using ClassroomManagement.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Linq;
+using System.IO;
 
 public class MaterialModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IWebHostEnvironment _env;
 
-    public MaterialModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public MaterialModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
     {
         _context = context;
         _userManager = userManager;
+        _env = env;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -27,14 +33,19 @@ public class MaterialModel : PageModel
 
     public CourseMaterial? Material { get; set; }
 
-    // For editing
     [BindProperty]
     [Required]
     public string Title { get; set; } = "";
 
     [BindProperty]
     [Required]
-    public string MaterialContent { get; set; } = ""; // Renamed from Content
+    public string Content { get; set; } = "";
+
+    [BindProperty]
+    public List<IFormFile> NewFiles { get; set; } = new List<IFormFile>();
+
+    [BindProperty]
+    public List<int> FilesToDelete { get; set; } = new List<int>();
 
     public bool IsInstructor { get; set; }
 
@@ -51,9 +62,8 @@ public class MaterialModel : PageModel
         var user = await _userManager.GetUserAsync(User);
         IsInstructor = User.IsInRole("Instructor") && user?.Id == Material.InstructorId;
 
-        // Pre-fill for edit
         Title = Material.Title;
-        MaterialContent = Material.Content;
+        Content = Material.Content;
 
         return Page();
     }
@@ -80,7 +90,51 @@ public class MaterialModel : PageModel
         }
 
         material.Title = Title;
-        material.Content = MaterialContent;
+        material.Content = Content;
+
+        // === Delete selected files (checkbox version) ===
+        if (FilesToDelete != null && FilesToDelete.Any())
+        {
+            var filesToRemove = material.Files.Where(f => FilesToDelete.Contains(f.Id)).ToList();
+            foreach (var file in filesToRemove)
+            {
+                var absolutePath = Path.Combine(_env.WebRootPath, file.FilePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(absolutePath))
+                    System.IO.File.Delete(absolutePath);
+
+                _context.CourseMaterialFiles.Remove(file);
+            }
+        }
+
+        // === New file upload logic ===
+        if (NewFiles != null && NewFiles.Any())
+        {
+            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "coursematerials", material.Id.ToString());
+            Directory.CreateDirectory(uploadFolder);
+
+            foreach (var file in NewFiles)
+            {
+                if (file.Length > 0)
+                {
+                    var uniqueName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{System.Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(uploadFolder, uniqueName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var relPath = $"/uploads/coursematerials/{material.Id}/{uniqueName}";
+                    material.Files.Add(new CourseMaterialFile
+                    {
+                        FileName = file.FileName,
+                        FilePath = relPath,
+                        ContentType = file.ContentType
+                    });
+                }
+            }
+        }
+
         await _context.SaveChangesAsync();
 
         return RedirectToPage("/Material", new { id = Id });

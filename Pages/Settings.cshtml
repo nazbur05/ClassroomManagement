@@ -1,0 +1,60 @@
+@page
+@model SettingsModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<a href="/Main" class="btn btn-secondary mb-3">&larr; Back to Main</a>
+
+<h1>Profile</h1>
+
+<div class="mb-4">
+    <strong>Name:</strong> @Model.FirstName @Model.LastName<br />
+    @if (!string.IsNullOrEmpty(Model.StudId))
+    {
+        <strong>Student ID:</strong> @Model.StudId<br />
+    }
+    @if (!string.IsNullOrEmpty(Model.Specialization))
+    {
+        <strong>Specialization:</strong> @Model.Specialization<br />
+    }
+</div>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-success">@Model.StatusMessage</div>
+}
+
+<h3>Change Email</h3>
+<form method="post" asp-page-handler="ChangeEmail" class="mb-4">
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Change Email</button>
+</form>
+
+<h3>Change Password</h3>
+<form method="post" asp-page-handler="ChangePassword">
+    <div>
+        <label asp-for="CurrentPassword"></label>
+        <input asp-for="CurrentPassword" type="password" class="form-control" autocomplete="current-password" />
+        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="NewPassword"></label>
+        <input asp-for="NewPassword" type="password" class="form-control" autocomplete="new-password" />
+        <span asp-validation-for="NewPassword" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" autocomplete="new-password" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Change Password</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

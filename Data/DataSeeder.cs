@@ -9,6 +9,63 @@ namespace ClassroomManagement.Data
 {
     public static class DataSeeder
     {
+        public static async Task SeedStudents(UserManager<ApplicationUser> userManager)
+        {
+            var students = new[]
+            {
+                new { User = new ApplicationUser
+                        {
+                            StudId = "w69645",
+                            UserName = "gulzatyessen@gmail.com",
+                            Email = "gulzatyessen@gmail.com",
+                            FirstName = "Gulzat",
+                            LastName = "Yessen",
+                            EmailConfirmed = true
+                        },
+                    Password = "Gulzatpswd1"
+                },
+                new { User = new ApplicationUser
+                        {
+                            StudId = "w70963",
+                            UserName = "nazburgenbay01@gmail.com",
+                            Email = "nazburgenbay01@gmail.com",
+                            FirstName = "Naz",
+                            LastName = "Burgenbay",
+                            EmailConfirmed = true
+                        },
+                    Password = "Nazpswd1"
+                },
+                new { User = new ApplicationUser
+                        {
+                            StudId = "w69646",
+                            UserName = "dilnazdosumbek7@gmail.com",
+                            Email = "dilnazdosumbek7@gmail.com",
+                            FirstName = "Dilnaz",
+                            LastName = "Dosumbek",
+                            EmailConfirmed = true
+                        },
+                    Password = "Dilnazpswd1"
+                }
+            };
+
+            foreach (var studentData in students)
+            {
+                var user = await userManager.FindByEmailAsync(studentData.User.Email);
+                if (user == null)
+                {
+                    var result = await userManager.CreateAsync(studentData.User, studentData.Password);
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(studentData.User, "Student");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to create student {studentData.User.Email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
+                }
+            }
+        }
+
         public static async Task SeedInstructors(UserManager<ApplicationUser> userManager)
         {
             var instructors = new[]
@@ -55,7 +112,7 @@ namespace ClassroomManagement.Data
 
         public static async Task SeedCourses(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            await context.Database.EnsureCreatedAsync();
+            // await context.Database.EnsureCreatedAsync();
 
             // Get instructors seeded earlier
             var instructor1 = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "mjagiela@classroom.com");
@@ -88,7 +145,6 @@ namespace ClassroomManagement.Data
                 await context.SaveChangesAsync();
             }
 
-            // Assign CourseMaterials if not already present
             if (!context.CourseMaterials.Any())
             {
                 var introCourse = await context.Courses.FirstOrDefaultAsync(c => c.Name == "Programming Languages");
@@ -121,9 +177,8 @@ namespace ClassroomManagement.Data
 
         public static async Task SeedStudentCourses(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            await context.Database.EnsureCreatedAsync();
+            // await context.Database.EnsureCreatedAsync();
 
-            // Get students by email
             var student1 = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "gulzatyessen@gmail.com");
             var student2 = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "nazburgenbay01@gmail.com");
             var student3 = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "dilnazdosumbek7@gmail.com");
@@ -133,7 +188,6 @@ namespace ClassroomManagement.Data
                 throw new Exception("Students must be seeded before assigning courses.");
             }
 
-            // Get courses by name (use the same names as in SeedCourses)
             var course1 = await context.Courses.FirstOrDefaultAsync(c => c.Name == "Programming Languages");
             var course2 = await context.Courses.FirstOrDefaultAsync(c => c.Name == "Software Engineering");
 
@@ -142,12 +196,10 @@ namespace ClassroomManagement.Data
                 throw new Exception("Courses must be seeded before assigning students.");
             }
 
-            // Only seed if not already present
             if (!context.StudentCourses.Any())
             {
                 var studentCourses = new[]
                 {
-                    // Enroll all three students in both courses as an example
                     new StudentCourse { StudentId = student1.Id, CourseId = course1.Id },
                     new StudentCourse { StudentId = student1.Id, CourseId = course2.Id },
                     new StudentCourse { StudentId = student2.Id, CourseId = course1.Id },

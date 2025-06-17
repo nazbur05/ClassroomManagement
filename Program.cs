@@ -41,7 +41,8 @@ using (var scope = app.Services.CreateScope())
 
     await DbInitializer.Initialize(context, userManager, roleManager);
 
-    await DataSeeder.SeedInstructors(userManager); // Create separate DataSeeder for this
+    await DataSeeder.SeedStudents(userManager);
+    await DataSeeder.SeedInstructors(userManager);
     await DataSeeder.SeedCourses(context, userManager);
     await DataSeeder.SeedStudentCourses(context, userManager);
 }

@@ -52,20 +52,7 @@ public class LoginModel : PageModel
         if (result.Succeeded)
         {
             _logger.LogInformation("Login succeeded for email: {Email}", Email);
-
-            // Find the user and check their roles
             var user = await _userManager.FindByEmailAsync(Email);
-            if (user != null)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                if (roles.Contains("Admin"))
-                {
-                    // Redirect to Admin/Users if admin
-                    return RedirectToPage("/Admin/Users");
-                }
-            }
-
-            // Redirect to main page if not admin
             return RedirectToPage("/Main");
         }
         else

@@ -9,7 +9,7 @@
 <h1>
     @if (Model.EditMode && Model.IsInstructor)
     {
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
             <div>
                 <label asp-for="Title"></label>
@@ -17,10 +17,44 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div>
-                <label asp-for="MaterialContent"></label>
-                <textarea asp-for="MaterialContent" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="MaterialContent" class="text-danger"></span>
+                <label asp-for="Content"></label>
+                <textarea asp-for="Content" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+            <div>
+                <label for="NewFiles">Add files (you can select multiple):</label>
+                <input type="file" id="NewFiles" name="NewFiles" multiple />
+            </div>
+            @if (Model.Material?.Files?.Any() ?? false)
+            {
+                <h5>Existing Files</h5>
+                <ul>
+                @foreach (var file in Model.Material.Files)
+                {
+                    <li style="margin-bottom: 1em;">
+                        @if (
+                            file.FileName.ToLower().EndsWith(".png") ||
+                            file.FileName.ToLower().EndsWith(".jpg") ||
+                            file.FileName.ToLower().EndsWith(".jpeg") ||
+                            file.FileName.ToLower().EndsWith(".gif") ||
+                            file.FileName.ToLower().EndsWith(".bmp") ||
+                            file.FileName.ToLower().EndsWith(".webp")
+                        )
+                        {
+                            <img src="@file.FilePath" alt="@file.FileName" style="max-width:200px;max-height:200px;display:block;margin-bottom:8px;" />
+                        }
+                        else
+                        {
+                            <a href="@file.FilePath" download>@file.FileName</a>
+                        }
+                        <label>
+                            <input type="checkbox" name="FilesToDelete" value="@file.Id" />
+                            Delete
+                        </label>
+                    </li>
+                }
+                </ul>
+            }
             <button type="submit" class="btn btn-success mt-2">Save</button>
             <a href="/Material?id=@Model.Material.Id" class="btn btn-secondary mt-2">Cancel</a>
         </form>
@@ -45,8 +79,22 @@
         <ul>
             @foreach (var file in Model.Material.Files)
             {
-                <li>
-                    <a href="@file.FilePath" download>@file.FileName</a>
+                <li style="margin-bottom: 1em;">
+                    @if (
+                        file.FileName.ToLower().EndsWith(".png") ||
+                        file.FileName.ToLower().EndsWith(".jpg") ||
+                        file.FileName.ToLower().EndsWith(".jpeg") ||
+                        file.FileName.ToLower().EndsWith(".gif") ||
+                        file.FileName.ToLower().EndsWith(".bmp") ||
+                        file.FileName.ToLower().EndsWith(".webp")
+                    )
+                    {
+                        <img src="@file.FilePath" alt="@file.FileName" style="max-width:200px;max-height:200px;display:block;margin-bottom:8px;" />
+                    }
+                    else
+                    {
+                        <a href="@file.FilePath" download>@file.FileName</a>
+                    }
                 </li>
             }
         </ul>

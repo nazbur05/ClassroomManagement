@@ -4,17 +4,23 @@ using ClassroomManagement.Data;
 using ClassroomManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class AddMaterialModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IWebHostEnvironment _env;
 
-    public AddMaterialModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public AddMaterialModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
     {
         _context = context;
         _userManager = userManager;
+        _env = env;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -24,8 +30,10 @@ public class AddMaterialModel : PageModel
     public string Title { get; set; }
     [BindProperty]
     public string Content { get; set; }
+
+    // Allow multiple files
     [BindProperty]
-    public IFormFile? Upload { get; set; } // for file upload
+    public List<IFormFile> Uploads { get; set; } = new List<IFormFile>();
 
     public void OnGet()
     {
@@ -42,12 +50,42 @@ public class AddMaterialModel : PageModel
             CourseId = CourseId,
             Title = Title,
             Content = Content,
-            InstructorId = instructorId
-            // Add handling file upload soon
+            InstructorId = instructorId,
+            Files = new List<CourseMaterialFile>()
         };
 
+        // Save material first to generate ID for file association
         _context.CourseMaterials.Add(material);
         await _context.SaveChangesAsync();
+
+        if (Uploads != null && Uploads.Any())
+        {
+            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "coursematerials", material.Id.ToString());
+            Directory.CreateDirectory(uploadFolder);
+
+            foreach (var file in Uploads)
+            {
+                if (file.Length > 0)
+                {
+                    var uniqueName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{System.Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(uploadFolder, uniqueName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var relPath = $"/uploads/coursematerials/{material.Id}/{uniqueName}";
+                    material.Files.Add(new CourseMaterialFile
+                    {
+                        FileName = file.FileName,
+                        FilePath = relPath,
+                        ContentType = file.ContentType
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
 
         return RedirectToPage("/Course", new { id = CourseId });
     }
