@@ -64,8 +64,8 @@ namespace ClassroomManagement.Pages.Admin
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                if (roles.Contains("Instructor")) Instructors.Add(user);
-                if (roles.Contains("Student")) Students.Add(user);
+                if (UserHelper.IsInstructor(roles)) Instructors.Add(user);
+                if (UserHelper.IsStudent(roles)) Students.Add(user);
             }
         }
 
@@ -156,9 +156,9 @@ namespace ClassroomManagement.Pages.Admin
             user.LastName = EditLastName;
 
             var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains("Student"))
+            if (UserHelper.IsStudent(roles))
             {
-                if (string.IsNullOrWhiteSpace(EditStudId) || !System.Text.RegularExpressions.Regex.IsMatch(EditStudId, @"^w\d{5}$"))
+                if (!UserHelper.IsValidStudentId(EditStudId))
                 {
                     ModelState.AddModelError("EditStudId", "Student ID must start with 'w' and have 5 digits.");
                     await OnGetAsync();
