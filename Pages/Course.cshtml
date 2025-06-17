@@ -61,25 +61,93 @@
 </div>
 
 <style>
-.tabs { display: flex; gap: 1em; margin-bottom: 1em; align-items: center; }
-.tab-btn { padding: 0.5em 1.5em; border: none; background: #eee; cursor: pointer; border-radius: 6px 6px 0 0; font-weight: bold; }
-.tab-btn.active { background: #fff; border-bottom: 2px solid #fff; }
-.tab-section { border: 1px solid #ddd; padding: 1em; border-radius: 0 6px 6px 6px; background: #fff; }
-.add-material-btn {
-    margin-left: auto;
-    padding: 0.5em 1.2em;
-    background: #3a7afe;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background 0.2s;
-}
-.add-material-btn:hover {
-    background: #2962ca;
-}
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: rgba(30, 41, 59, 0.85);
+      --text: #f1f5f9;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 40px; }
+
+    a.btn {
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+      background-color: var(--accent);
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    a.btn:hover { background-color: var(--accent-hover); }
+
+    h1 { font-size: 32px; color: var(--accent); margin-bottom: 10px; }
+    p { margin-bottom: 24px; color: #cbd5e1; }
+
+    .tabs {
+      display: flex;
+      gap: 1em;
+      margin-bottom: 1em;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background-color: #334155;
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .tab-btn.active {
+      background-color: var(--card);
+      border-bottom: 2px solid var(--card);
+    }
+
+    .tab-section {
+      background-color: var(--card);
+      padding: 24px;
+      border-radius: 0 12px 12px 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      margin-bottom: 30px;
+    }
+
+    .add-material-btn {
+      margin-left: auto;
+      background-color: var(--accent);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .add-material-btn:hover { background-color: var(--accent-hover); }
+
+    ul { list-style: none; padding-left: 0; }
+    li { margin-bottom: 1em; }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
 </style>
+
 <script>
 function showTab(tab) {
     document.getElementById('materialsSection').style.display = tab === 'materials' ? '' : 'none';

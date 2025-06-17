@@ -4,23 +4,124 @@
     ViewData["Title"] = "Profile";
 }
 
-<a href="/Main" class="btn btn-secondary mb-3">&larr; Back to Main</a>
-
-<h1>Profile</h1>
-
-<div class="mb-4">
-    <strong>Name:</strong> @Model.FirstName @Model.LastName<br />
-    @if (!string.IsNullOrEmpty(Model.StudId))
-    {
-        <strong>Student ID:</strong> @Model.StudId<br />
+<style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: rgba(30, 41, 59, 0.75);
+      --border: rgba(255, 255, 255, 0.05);
+      --text: #f1f5f9;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
     }
-    @if (!string.IsNullOrEmpty(Model.Specialization))
-    {
-        <strong>Specialization:</strong> @Model.Specialization<br />
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    <strong>Email:</strong> @Model.Email
-    <a href="/Settings" class="btn btn-link btn-sm">Change</a>
-    <br />
-    <strong>Password:</strong> ********
-    <a href="/Settings#password" class="btn btn-link btn-sm">Change</a>
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    a.btn-back {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    a.btn-back:hover {
+      color: var(--accent-hover);
+    }
+
+    .profile-info {
+      background-color: rgba(255, 255, 255, 0.02);
+      padding: 24px;
+      border-radius: 16px;
+      font-size: 16px;
+      line-height: 1.9;
+      border: 1px solid var(--border);
+    }
+
+    .btn-link {
+      text-decoration: none;
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-left: 8px;
+      transition: color 0.2s ease;
+    }
+
+    .btn-link:hover {
+      color: var(--accent-hover);
+    }
+
+    @@keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @@media (max-width: 600px) {
+      .container {
+        padding: 24px;
+      }
+    }
+</style>
+
+<div class="container">
+    <a href="/Main" class="btn-back">&larr; Back to Main</a>
+
+    <h1>Profile</h1>
+
+    <div class="profile-info">
+        <strong>Name:</strong> @Model.FirstName @Model.LastName<br />
+        @if (!string.IsNullOrEmpty(Model.StudId))
+        {
+            <strong>Student ID:</strong> @Model.StudId<br />
+        }
+        @if (!string.IsNullOrEmpty(Model.Specialization))
+        {
+            <strong>Specialization:</strong> @Model.Specialization<br />
+        }
+        <strong>Email:</strong> @Model.Email
+        <a href="/Settings" class="btn-link">Change</a>
+        <br />
+        <strong>Password:</strong> ********
+        <a href="/Settings#password" class="btn-link">Change</a>
+    </div>
 </div>

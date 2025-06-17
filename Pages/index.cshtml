@@ -11,7 +11,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduGo - Login</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root {
+            --bg: #0f172a;
+            --card: rgba(30, 41, 59, 0.85);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f1f5f9;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --danger: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
         body {
             background: url('/images/login-background.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -20,29 +36,101 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            color: var(--text);
         }
+
         .login-container {
-            background: rgb(249, 241, 241);
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
+            background: var(--card);
+            border-radius: 16px;
             padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            backdrop-filter: blur(16px);
             text-align: center;
         }
-        .logo { width: 150px; margin-bottom: 30px; }
-        h1 { font-size: 24px; color: #1a1a1a; margin-bottom: 30px; font-weight: 600; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: #555; font-weight: 500; }
-        input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; transition: border-color 0.3s; }
-        input:focus { outline: none; border-color: #4a6cf7; }
-        .btn { width: 100%; padding: 12px; border-radius: 5px; font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; font-size: 16px; margin-top: 10px; }
-        .btn-primary { background: #4a6cf7; color: white; }
-        .btn-primary:hover { background: #3a5ce4; }
-        .signup-link { margin-top: 25px; font-size: 14px; color: #666; }
-        .signup-link a { color: #4a6cf7; text-decoration: none; font-weight: 500; }
-        .validation-summary-errors { color: #b94a48; margin-bottom: 16px; text-align: left; }
-        @@media (max-width: 480px) { .login-container { padding: 30px 20px; } }
+
+        .logo {
+            width: 140px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .signup-link {
+            margin-top: 24px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .signup-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .validation-summary-errors {
+            color: var(--danger);
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        @@media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -55,12 +143,12 @@
             <div class="form-group">
                 <label asp-for="Email"></label>
                 <input asp-for="Email" placeholder="Enter your email" autocomplete="username" />
-                <span asp-validation-for="Email"></span>
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Password"></label>
                 <input asp-for="Password" placeholder="Enter your password" type="password" autocomplete="current-password" />
-                <span asp-validation-for="Password"></span>
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Log In</button>
         </form>

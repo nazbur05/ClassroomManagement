@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ClassroomManagement.Models;
+using ClassroomManagement.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,7 +88,7 @@ namespace ClassroomManagement.Pages.Admin
                     await OnGetAsync();
                     return Page();
                 }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(NewStudId, @"^w\d{5}$"))
+                if (!UserHelper.IsValidStudentId(NewStudId))
                 {
                     ModelState.AddModelError("NewStudId", "Student ID must start with 'w' and have 5 digits.");
                     await OnGetAsync();

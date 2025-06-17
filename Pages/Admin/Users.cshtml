@@ -4,147 +4,187 @@
     ViewData["Title"] = "User Management";
 }
 
-<h1>User Management</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Classroom Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 
-<a asp-page="/Main" class="btn btn-primary" style="margin-bottom: 20px;">Back to Main Page</a>
+    <style>
+        :root {
+          --bg: #0f172a;
+          --card: rgba(30, 41, 59, 0.9);
+          --text: #f1f5f9;
+          --accent: #6366f1;
+          --accent-hover: #4f46e5;
+          --border: rgba(255,255,255,0.1);
+        }
 
-<h2>Instructors</h2>
-<table>
-    <tr>
-        <th>Email</th>
-        <th>Name</th>
-        <th>Specialization</th>
-        <th>Actions</th>
-    </tr>
-    @foreach (var user in Model.Instructors)
-    {
-        if (Model.EditUserId == user.Id)
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 40px; }
+        h1, h2 { color: var(--accent); margin-bottom: 20px; }
+        a.btn, button.btn { margin-bottom: 16px; padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+        a.btn-primary, button.btn-primary { background-color: var(--accent); color: white; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+        th { background: #1e293b; }
+        input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background-color: rgba(255,255,255,0.06); color: var(--text); }
+        form { margin-top: 20px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #cbd5e1; }
+        button { background-color: var(--accent); color: white; padding: 10px 16px; border: none; border-radius: 6px; font-weight: 600; transition: background 0.3s ease; }
+        button:hover { background-color: var(--accent-hover); }
+        .btn-warning { background-color: #facc15; color: #1f2937; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .btn-secondary { background-color: #6b7280; color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>User Management</h1>
+
+    <a asp-page="/Main" class="btn btn-primary">Back to Main Page</a>
+
+    <h2>Instructors</h2>
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Specialization</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var user in Model.Instructors)
         {
-            <tr>
-                <form method="post" asp-page-handler="Update">
-                    <td>
-                        <input type="hidden" name="EditUserId" value="@user.Id" />
-                        <input type="email" name="EditEmail" value="@Model.EditEmail" required />
-                    </td>
-                    <td>
-                        <input type="text" name="EditFirstName" value="@Model.EditFirstName" required />
-                        <input type="text" name="EditLastName" value="@Model.EditLastName" required />
-                    </td>
-                    <td>
-                        <input type="text" name="EditSpecialization" value="@Model.EditSpecialization" />
-                    </td>
-                    <td>
-                        <button type="submit" class="btn btn-success">Save</button>
-                        <a asp-page="/Admin/Users" class="btn btn-secondary">Cancel</a>
-                    </td>
-                </form>
-            </tr>
-        }
-        else
-        {
-            <tr>
-                <td>@user.Email</td>
-                <td>@user.FirstName @user.LastName</td>
-                <td>@user.Specialization</td>
-                <td>
-                    <form method="post" asp-page-handler="Edit" asp-route-id="@user.Id" style="display:inline;">
-                        <button type="submit" class="btn btn-warning">Edit</button>
+            if (Model.EditUserId == user.Id)
+            {
+                <tr>
+                    <form method="post" asp-page-handler="Update">
+                        <td>
+                            <input type="hidden" name="EditUserId" value="@user.Id" />
+                            <input type="email" name="EditEmail" value="@Model.EditEmail" required />
+                        </td>
+                        <td>
+                            <input type="text" name="EditFirstName" value="@Model.EditFirstName" required />
+                            <input type="text" name="EditLastName" value="@Model.EditLastName" required />
+                        </td>
+                        <td>
+                            <input type="text" name="EditSpecialization" value="@Model.EditSpecialization" />
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <a asp-page="/Admin/Users" class="btn btn-secondary">Cancel</a>
+                        </td>
                     </form>
-                    <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" style="display:inline;">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.Specialization</td>
+                    <td>
+                        <form method="post" asp-page-handler="Edit" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-warning">Edit</button>
+                        </form>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
         }
-    }
-</table>
+    </table>
 
-<h2>Students</h2>
-<table>
-    <tr><th>Student ID</th><th>Email</th><th>Name</th><th>Actions</th></tr>
-    @foreach (var user in Model.Students)
-    {
-        if (Model.EditUserId == user.Id)
+    <h2>Students</h2>
+    <table>
+        <tr><th>Student ID</th><th>Email</th><th>Name</th><th>Actions</th></tr>
+        @foreach (var user in Model.Students)
         {
-            <tr>
-                <form method="post" asp-page-handler="Update">
-                    <td>
-                        <input type="hidden" name="EditUserId" value="@user.Id" />
-                        <input type="text" name="EditStudId" value="@Model.EditStudId" maxlength="6" pattern="w\d{5}" required />
-                    </td>
-                    <td><input type="email" name="EditEmail" value="@Model.EditEmail" required /></td>
-                    <td>
-                        <input type="text" name="EditFirstName" value="@Model.EditFirstName" required />
-                        <input type="text" name="EditLastName" value="@Model.EditLastName" required />
-                    </td>
-                    <td>
-                        <button type="submit" class="btn btn-success">Save</button>
-                        <a asp-page="/Admin/Users" class="btn btn-secondary">Cancel</a>
-                    </td>
-                </form>
-            </tr>
-        }
-        else
-        {
-            <tr>
-                <td>@user.StudId</td>
-                <td>@user.Email</td>
-                <td>@user.FirstName @user.LastName</td>
-                <td>
-                    <form method="post" asp-page-handler="Edit" asp-route-id="@user.Id" style="display:inline;">
-                        <button type="submit" class="btn btn-warning">Edit</button>
+            if (Model.EditUserId == user.Id)
+            {
+                <tr>
+                    <form method="post" asp-page-handler="Update">
+                        <td>
+                            <input type="hidden" name="EditUserId" value="@user.Id" />
+                            <input type="text" name="EditStudId" value="@Model.EditStudId" maxlength="6" pattern="w\d{5}" required />
+                        </td>
+                        <td><input type="email" name="EditEmail" value="@Model.EditEmail" required /></td>
+                        <td>
+                            <input type="text" name="EditFirstName" value="@Model.EditFirstName" required />
+                            <input type="text" name="EditLastName" value="@Model.EditLastName" required />
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <a asp-page="/Admin/Users" class="btn btn-secondary">Cancel</a>
+                        </td>
                     </form>
-                    <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" style="display:inline;">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>@user.StudId</td>
+                    <td>@user.Email</td>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>
+                        <form method="post" asp-page-handler="Edit" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-warning">Edit</button>
+                        </form>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
         }
-    }
-</table>
+    </table>
 
-<h2>Add New User</h2>
-<form method="post" asp-page-handler="Create">
-    <label>Email:</label>
-    <input type="email" name="NewEmail" required />
-    <label>First Name:</label>
-    <input type="text" name="NewFirstName" required />
-    <label>Last Name:</label>
-    <input type="text" name="NewLastName" required />
-    <label>Password:</label>
-    <input type="password" name="NewPassword" required />
-    <label>Role:</label>
-    <select name="NewRole" id="roleSelect" onchange="toggleFields()">
-        <option value="Instructor">Instructor</option>
-        <option value="Student">Student</option>
-    </select>
-    <label id="studIdLabel" style="display:none;">Student ID:</label>
-    <input type="text" name="NewStudId" id="studIdInput" maxlength="6" pattern="w\d{5}" style="display:none;" value="@Model.NewStudId" />
-    <label id="specializationLabel" style="display:none;">Specialization:</label>
-    <input type="text" name="NewSpecialization" id="specializationInput" style="display:none;" value="@Model.NewSpecialization" />
-    <button type="submit">Create</button>
-</form>
+    <h2>Add New User</h2>
+    <form method="post" asp-page-handler="Create">
+        <label>Email:</label>
+        <input type="email" name="NewEmail" required />
+        <label>First Name:</label>
+        <input type="text" name="NewFirstName" required />
+        <label>Last Name:</label>
+        <input type="text" name="NewLastName" required />
+        <label>Password:</label>
+        <input type="password" name="NewPassword" required />
+        <label>Role:</label>
+        <select name="NewRole" id="roleSelect" onchange="toggleFields()">
+            <option value="Instructor">Instructor</option>
+            <option value="Student">Student</option>
+        </select>
+        <label id="studIdLabel" style="display:none;">Student ID:</label>
+        <input type="text" name="NewStudId" id="studIdInput" maxlength="6" pattern="w\d{5}" style="display:none;" value="@Model.NewStudId" />
+        <label id="specializationLabel" style="display:none;">Specialization:</label>
+        <input type="text" name="NewSpecialization" id="specializationInput" style="display:none;" value="@Model.NewSpecialization" />
+        <button type="submit">Create</button>
+    </form>
 
-<script>
-    function toggleFields() {
-        var role = document.getElementById('roleSelect').value;
-        var studIdInput = document.getElementById('studIdInput');
-        var studIdLabel = document.getElementById('studIdLabel');
-        var specializationInput = document.getElementById('specializationInput');
-        var specializationLabel = document.getElementById('specializationLabel');
-        if (role === 'Student') {
-            studIdInput.style.display = '';
-            studIdLabel.style.display = '';
-            studIdInput.required = true;
-            specializationInput.style.display = 'none';
-            specializationLabel.style.display = 'none';
-        } else {
-            studIdInput.style.display = 'none';
-            studIdLabel.style.display = 'none';
-            studIdInput.required = false;
-            specializationInput.style.display = '';
-            specializationLabel.style.display = '';
+    <script>
+        function toggleFields() {
+            var role = document.getElementById('roleSelect').value;
+            var studIdInput = document.getElementById('studIdInput');
+            var studIdLabel = document.getElementById('studIdLabel');
+            var specializationInput = document.getElementById('specializationInput');
+            var specializationLabel = document.getElementById('specializationLabel');
+            if (role === 'Student') {
+                studIdInput.style.display = '';
+                studIdLabel.style.display = '';
+                studIdInput.required = true;
+                specializationInput.style.display = 'none';
+                specializationLabel.style.display = 'none';
+            } else {
+                studIdInput.style.display = 'none';
+                studIdLabel.style.display = 'none';
+                studIdInput.required = false;
+                specializationInput.style.display = '';
+                specializationLabel.style.display = '';
+            }
         }
-    }
-    window.onload = toggleFields;
-</script>
+        window.onload = toggleFields;
+    </script>
+
+</body>
+</html>
